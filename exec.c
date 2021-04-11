@@ -12,7 +12,6 @@
 
 void sig_int_handler(int);
 void sig_abrt_handler(int);
-void sig_timeout_handler(int);
 
 
 pid_t child_pid = -1;
@@ -25,7 +24,7 @@ int main(int argc, char **argv)
 
   // creat timer
   if (fork()==0){
-    sleep(10);
+    sleep(3);
     kill(getppid(),SIGABRT);
     exit(0);
   }
@@ -54,10 +53,9 @@ int main(int argc, char **argv)
 void sig_abrt_handler(int signum){
   printf("timeout or abort signal detected\n");
   if (child_pid != 0){
-    kill(child_pid,SIGUSR1);
+    kill(child_pid,SIGABRT);
     pid_t wpid = waitpid(child_pid, NULL, WUNTRACED);
   }
-  exit(0);
   exit(0);
 }
 
