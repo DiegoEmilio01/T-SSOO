@@ -21,13 +21,12 @@ int main(int argc, char **argv)
 {
   signal(SIGINT,sig_int_handler); // Register signal handler
   signal(SIGABRT,sig_abrt_handler); // Register signal handler
-  signal(SIGUSR1,sig_timeout_handler);
 
 
   // creat timer
   if (fork()==0){
     sleep(10);
-    kill(getppid(),SIGUSR1);
+    kill(getppid(),SIGABRT);
     exit(0);
   }
   child_pid = fork();
@@ -53,22 +52,18 @@ int main(int argc, char **argv)
 
 // https://linuxhint.com/signal_handlers_c_programming_language/
 void sig_abrt_handler(int signum){
-  printf("abort signal detected\n");
+  printf("timeout or abort signal detected\n");
+  if (child_pid != 0){
+    kill(child_pid,SIGUSR1);
+    pid_t wpid = waitpid(child_pid, NULL, WUNTRACED);
+  }
+  exit(0);
   exit(0);
 }
 
 
 void sig_int_handler(int signum){
   printf("interrupt signal detected\n");
-  exit(0);
-}
-
-void sig_timeout_handler(int signum){
-  printf("timeout signal detected\n");
-  if (child_pid != 0){
-    kill(child_pid,SIGUSR1);
-    pid_t wpid = waitpid(child_pid, NULL, WUNTRACED);
-  }
   exit(0);
 }
 
