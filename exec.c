@@ -67,6 +67,7 @@ void sig_timeout_handler(int signum){
   printf("timeout signal detected\n");
   if (child_pid != 0){
     kill(child_pid,SIGUSR1);
+    pid_t wpid = waitpid(child_pid, NULL, WUNTRACED);
   }
   exit(0);
 }
