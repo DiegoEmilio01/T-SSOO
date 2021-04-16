@@ -1,2 +1,2 @@
-# T1-SSOO
+# T-SSOO
 First homework of IIC2333
