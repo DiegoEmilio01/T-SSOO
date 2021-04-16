@@ -13,7 +13,7 @@
 static char** split_by_sep(char* str, char* sep)
 {
   char** new_str = calloc(MAX_SPLIT, sizeof(char*));
-  int index = 0;
+  int index = 0, len;
 
   char* token = strtok(str, sep);
   while (token != NULL) {
@@ -21,8 +21,11 @@ static char** split_by_sep(char* str, char* sep)
     strcpy(new_str[index++], token);
     token = strtok(NULL, sep);
   }
-  strcpy(new_str[index-1], strtok(new_str[index-1], "\r"));  // \r\n
-  strcpy(new_str[index-1], strtok(new_str[index-1], "\n"));  // \n
+  len = strlen(new_str[index-1]);
+  if (len > 1 && new_str[index-1][len-2] == '\r')
+    new_str[index-1][len-2] = '\0';
+  else if (len && new_str[index-1][len-1] == '\n')
+    new_str[index-1][len-1] = '\0';
   return new_str;
 }
 
