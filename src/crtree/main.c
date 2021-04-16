@@ -43,6 +43,7 @@ enum program_type char_to_pt(char c){
 int main(int argc, char **argv)
 {
   signal(SIGABRT,sig_abrt_handler); // Register signal handler
+  signal(SIGINT,sig_int_handler); // Register signal handler
   data_in = read_file(argv[1]);
   pid_main = getpid();
   int id = atoi(argv[2]);
@@ -85,9 +86,11 @@ void sig_alrm_handler(int signum){
 
 
 void sig_int_handler(int signum){
-  printf("interrupt signal detected\n");
-  for (int i=0; i<n_childs; i++)
-    kill(child_pids[i], SIGABRT);
+  if (ptype_this == R){
+    printf("interrupt signal detected\n");
+    for (int i=0; i<n_childs; i++)
+      kill(child_pids[i], SIGABRT);
+  }
 }
 
 void create_worker(int w_id){
@@ -136,8 +139,6 @@ void create_manager(int m_id, int is_root){
 
   // CREATE TIMER
   alarm(atoi(data_in->lines[m_id][1]));
-  if (is_root)
-      signal(SIGINT,sig_int_handler); // Register signal handler
   int t;
   n_childs = atoi(data_in->lines[m_id][2]);
   child_pids = malloc(n_childs*sizeof(pid_t));
