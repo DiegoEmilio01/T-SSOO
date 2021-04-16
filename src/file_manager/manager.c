@@ -21,7 +21,8 @@ static char** split_by_sep(char* str, char* sep)
     strcpy(new_str[index++], token);
     token = strtok(NULL, sep);
   }
-
+  strcpy(new_str[index-1], strtok(new_str[index-1], "\r"));  // \r\n
+  strcpy(new_str[index-1], strtok(new_str[index-1], "\n"));  // \n
   return new_str;
 }
 
