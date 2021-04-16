@@ -22,7 +22,7 @@ InputFile* data_in;
 
 void sig_int_handler(int);
 void sig_abrt_handler(int), create_manager(int, int), create_worker(int);
-void sig_abrt_timer(int);
+void sig_alrm_handler(int);
 
 int status, len_args, interrupted_child=0;
 pid_t pid_main, pid_child;
@@ -45,7 +45,6 @@ enum program_type char_to_pt(char c){
 
 int main(int argc, char **argv)
 {
-  signal(SIGINT,sig_int_handler); // Register signal handler
   signal(SIGABRT,sig_abrt_handler); // Register signal handler
   data_in = read_file(argv[1]);
   pid_main = getpid();
@@ -79,9 +78,8 @@ void sig_abrt_handler(int signum){
   // }
 }
 
-void sig_end_timer(int signum){
+void sig_alrm_handler(int signum){
   printf("Child ended before timer\n");
-  wait(NULL);
   exit(0);
 }
 
@@ -137,15 +135,12 @@ void create_worker(int w_id){
 }
 
 void create_manager(int m_id, int is_root){
-  pid_child = fork();
-  if (pid_child!=0){
-    signal(SIGUSR1,sig_end_timer); // Register signal handler
-    int time = atoi(data_in->lines[m_id][1]);
-    input_file_destroy(data_in);
-    sleep(time);
-    kill(pid_child, SIGABRT);
-    exit(0);
-  }
+  signal(SIGALRM, sig_alrm_handler); // Register signal handler
+
+  // CREATE TIMER
+  alarm(atoi(data_in->lines[m_id][1]));
+  if (is_root)
+      signal(SIGINT,sig_int_handler); // Register signal handler
   int t;
   int n_childs = atoi(data_in->lines[m_id][2]);
   // child_pids = malloc(n_childs*sizeof(pid_t));
@@ -197,7 +192,5 @@ void create_manager(int m_id, int is_root){
 
   printf("A\n");
   input_file_destroy(data_in);
-  // destruir timer si existe
-  kill(getppid(), SIGUSR1);
   exit(0);
 }
