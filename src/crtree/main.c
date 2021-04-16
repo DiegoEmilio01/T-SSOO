@@ -42,15 +42,15 @@ enum program_type char_to_pt(char c){
 
 int main(int argc, char **argv)
 {
-  signal(SIGABRT,sig_abrt_handler); // Register signal handler
-  signal(SIGINT,sig_int_handler); // Register signal handler
+  signal(SIGABRT,sig_abrt_handler); // Abort signal handler
+  signal(SIGINT,sig_int_handler); // Interrumption signal handler
   data_in = read_file(argv[1]);
   pid_main = getpid();
   int id = atoi(argv[2]);
 
   // encontrar tipo de programa
   ptype_this = char_to_pt(data_in->lines[id][0][0]);
-  printf("ptype: %d\n", ptype_this);
+  // printf("ptype: %d\n", ptype_this);
   // hacer acciones necesarias
   if (ptype_this == W){
     create_worker(id);
@@ -60,16 +60,16 @@ int main(int argc, char **argv)
   }
 
 
-  printf("filelines: %d\n", data_in->len);
-  printf("%d\n", atoi(argv[2]));
-  printf("pid: %d\n", pid_main);
+  // printf("filelines: %d\n", data_in->len);
+  // printf("%d\n", atoi(argv[2]));
+  // printf("pid: %d\n", pid_main);
 }
 
 
 // https://linuxhint.com/signal_handlers_c_programming_language/
 void sig_abrt_handler(int signum){
   // pasa error a los hijos
-  printf("abort signal detected\n");
+  // printf("abort signal detected\n");
   if (ptype_this == W)
     kill(pid_child, SIGABRT);
   else
@@ -79,7 +79,7 @@ void sig_abrt_handler(int signum){
 }
 
 void sig_alrm_handler(int signum){
-  printf("timeout signal detected\n");
+  // printf("timeout signal detected\n");
   for (int i=0; i<n_childs; i++)
     kill(pid_child, SIGABRT);
 }
@@ -87,7 +87,7 @@ void sig_alrm_handler(int signum){
 
 void sig_int_handler(int signum){
   if (ptype_this == R){
-    printf("interrupt signal detected\n");
+    // printf("interrupt signal detected\n");
     for (int i=0; i<n_childs; i++)
       kill(child_pids[i], SIGABRT);
   }
@@ -100,7 +100,7 @@ void create_worker(int w_id){
     signal(SIGINT, SIG_IGN);
     char** command = calloc(len_args + 2, sizeof(char*));
     command[0] = data_in->lines[w_id][1];
-    printf("args: %s\n", command[0]);
+    // printf("args: %s\n", command[0]);
     for (int i = 0; i < len_args; i++)
     {
       command[i + 1] = data_in->lines[w_id][3+i];
