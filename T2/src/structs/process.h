@@ -7,10 +7,16 @@ typedef struct process
   int priority;
   char* state;
   struct process* next;
+  struct process* prev;
+  int turns;
+  int interruptions;
+  time_t turnaround;
+  time_t response;
+  time_t wating;
 } Process;
 
 Process* process_init(int pid, char* name, int priority, char* state);
+void interrupt_process(Process* process);
 void priority_update(Process* process, int priority);
 void state_update(Process* process, char* state);
 void next_update(Process* process, Process* next);
-void process_destroy(Process* process);
