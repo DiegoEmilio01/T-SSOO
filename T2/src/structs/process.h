@@ -15,7 +15,7 @@ typedef struct process
   time_t wating;
 } Process;
 
-Process* process_init(int pid, char* name, int priority, char* state);
+void process_init(Process* process, int pid, char* name, int priority, char* state);
 void interrupt_process(Process* process);
 void priority_update(Process* process, int priority);
 void state_update(Process* process, char* state);
