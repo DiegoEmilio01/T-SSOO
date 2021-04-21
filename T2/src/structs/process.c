@@ -13,6 +13,21 @@ Process* process_init(int pid, char* name, int priority, char* state)
   };
 }
 
+void priority_update(Process* process, int priority)
+{
+  process -> priority = priority;
+}
+
+void state_update(Process* process, char* state)
+{
+  process -> state = state;
+}
+
+void next_update(Process* process, Process* next)
+{
+  process -> next = next;
+}
+
 void process_destroy(Process* process)
 {
   free(process);
