@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <time.h>
+
 #pragma once
 
 typedef struct process
