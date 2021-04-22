@@ -37,8 +37,14 @@ Process* add_process(Queue* q){
 void move_process(Queue *from, Queue *to){
   Process *p = collapse_process(from);
   p->next = NULL;
-  to->end_process->next = p;
-  p->prev = to->end_process;
+  if (to->end_process){
+    to->end_process->next = p;
+    p->prev = to->end_process;
+  }
+  if (!(to->start_process)){
+    to->start_process = p;
+    to->curr_process = p;
+  }
   to->end_process = p;
 }
 
