@@ -40,7 +40,7 @@ void finish_process(Process* process, FILE* output_file)
   process -> state =  'F';
   process -> turns++;
   FILE *output_file = fopen(output_file, "w");
-  fprintf(output_file, "%s,%i,%i,%ld,%ld,%ld",
+  fprintf(output_file, "%s,%i,%i,%ld,%ld,%ld\n",
     process -> name,
     process -> turns,
     process -> interruptions,
