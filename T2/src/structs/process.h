@@ -5,7 +5,7 @@ typedef struct process
   int pid;
   char* name;
   int priority;
-  char* state;
+  char state; // toma los valores 'E' (Running), 'R' (Ready), 'W'(Waiting) y 'Finished'
   struct process* next;
   struct process* prev;
   int turns;
@@ -15,8 +15,7 @@ typedef struct process
   time_t wating;
 } Process;
 
-void process_init(Process* process, int pid, char* name, int priority, char* state);
+void process_init(Process* process, Process* next, int pid, char* name, int priority, char* state);
 void interrupt_process(Process* process);
 void priority_update(Process* process, int priority);
-void state_update(Process* process, char* state);
-void next_update(Process* process, Process* next);
+void finish_process(Process* process, FILE* output_file);
