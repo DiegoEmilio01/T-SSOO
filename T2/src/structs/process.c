@@ -24,6 +24,12 @@ void interrupt_process(Process* process)
   process -> state = 'R';
 }
 
+void continue_process(Process* process)
+{
+  process -> state = 'E';
+}
+
+
 void priority_update(Process* process, int priority)
 {
   process -> priority = priority;
