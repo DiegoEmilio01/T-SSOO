@@ -44,6 +44,7 @@ void move_process(Queue *from, Queue *to){
   if (!(to->start_process)){
     to->start_process = p;
     to->curr_process = p;
+    p->prev = NULL;
   }
   to->end_process = p;
 }
