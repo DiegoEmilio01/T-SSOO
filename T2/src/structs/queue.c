@@ -38,7 +38,7 @@ void move_process(Queue *from, Queue *to){
   Process *p = collapse_process(from);
   p->next = NULL;
   to->end_process->next = p;
-  p->prev = to->end_process->p;
+  p->prev = to->end_process;
   to->end_process = p;
 }
 
