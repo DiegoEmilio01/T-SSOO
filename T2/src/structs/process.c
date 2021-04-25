@@ -2,12 +2,11 @@
 #include <stdlib.h>
 #include "process.h"
 
-Process* process_init(int pid, char* name)
+Process* process_init(int pid)
 {
   Process* process = malloc(sizeof(Process));
   *process = (Process){
     process -> pid = pid,
-    process -> name = name,
     process -> state = 'A',
     process -> next = NULL,
     process -> prev = NULL,
@@ -43,14 +42,14 @@ void continue_process(Process* process, time_t response)
   }
 }
 
-void finish_process(Process* process, FILE* output_file, time_t turnaround)
+void finish_process(Process* process, FILE* output_file, time_t turnaround, char* name)
 {
   process -> turnaround = turnaround; 
   process -> state =  'F';
   process -> turns++;
   FILE *output_file = fopen(output_file, "w");
   fprintf(output_file, "%s,%i,%i,%ld,%ld,%ld\n",
-    process -> name,
+    name,
     process -> turns,
     process -> interruptions,
     process -> turnaround,
