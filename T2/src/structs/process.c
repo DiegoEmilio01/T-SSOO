@@ -2,11 +2,14 @@
 #include <stdlib.h>
 #include "process.h"
 
-Process* process_init(int pid)
+Process* process_init(int pid, int cycles, time_t wait, time_t wait_delay)
 {
   Process* process = malloc(sizeof(Process));
   *process = (Process){
     process -> pid = pid,
+    process -> cycles = cycles,
+    process -> wait = wait,
+    process -> wait_delay = wait_delay,
     process -> state = 'A',
     process -> next = NULL,
     process -> prev = NULL,
