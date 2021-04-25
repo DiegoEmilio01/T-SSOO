@@ -20,7 +20,7 @@ typedef struct process
   time_t wating;
 } Process;
 
-Process* process_init(int pid, char* name, int cycles, time_t wait, time_t wait_delay);
+Process process_init(int pid, char* name, int cycles, time_t wait, time_t wait_delay);
 void interrupt_process(Process* process);
 void continue_process(Process* process, time_t total_time);
 void finish_process(Process* process, FILE* output_file, time_t total_time, char* name);
