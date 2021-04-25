@@ -23,10 +23,10 @@ Process* collapse_process(Queue *q){
   return p;
 }
 
-Process* add_process(Queue* q){
-  q->end_process->next = malloc(sizeof(Process));
+void add_process(Queue* q, Process* p){
+  q->end_process->next = p;
+  p->prev = q->end_process;
   q->end_process = q->end_process->next;
-  return q->end_process;
 }
 
 /** Saca el mueve un proceso al final de otra cola

@@ -10,7 +10,7 @@ typedef struct queue {
   Process* end_process;
 } Queue;
 
-Process* add_process(Queue*);
+void add_process(Queue*, Process*);
 
 void move_process(Queue*, Queue*);
 
