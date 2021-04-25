@@ -31,12 +31,12 @@ void give_cpu_process(Process* process)
   // priority change
 }
 
-void continue_process(Process* process, time_t total_time)
+void continue_process(Process* process, time_t response)
 {
   process -> state = 'E';
   if (! process -> turns)
   {
-    process -> response = total_time;
+    process -> response = response;
   }
 }
 
@@ -45,9 +45,9 @@ void priority_update(Process* process, int priority)
   process -> priority = priority;
 }
 
-void finish_process(Process* process, FILE* output_file, time_t total_time)
+void finish_process(Process* process, FILE* output_file, time_t turnaround)
 {
-  process -> turnaround = total_time; 
+  process -> turnaround = turnaround; 
   process -> state =  'F';
   process -> turns++;
   FILE *output_file = fopen(output_file, "w");
