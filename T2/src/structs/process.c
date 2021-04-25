@@ -6,18 +6,18 @@ Process* process_init(int pid, int cycles, time_t wait, time_t wait_delay)
 {
   Process* process = malloc(sizeof(Process));
   *process = (Process){
-    process -> pid = pid,
-    process -> cycles = cycles,
-    process -> wait = wait,
-    process -> wait_delay = wait_delay,
-    process -> state = 'A',
-    process -> next = NULL,
-    process -> prev = NULL,
-    process -> turns = 0,
-    process -> interruptions = 0,
-    process -> turnaround = 0,
-    process -> response = 0,
-    process -> wating = 0,
+    .pid = pid,
+    .cycles = cycles,
+    .wait = wait,
+    .wait_delay = wait_delay,
+    .state = 'A',
+    .next = NULL,
+    .prev = NULL,
+    .turns = 0,
+    .interruptions = 0,
+    .turnaround = 0,
+    .response = 0,
+    .wating = 0,
   };
   return process;
 }
