@@ -2,12 +2,12 @@
 #include <stdlib.h>
 #include "process.h"
 
-void process_init(Process* process, Process* next, int pid, char* name, int priority, char* state)
+void process_init(Process* process, Process* next, int pid, char* name, int priority)
 {
   process -> pid = pid;
   process -> name = name;
   process -> priority = priority;
-  process -> state = state;
+  process -> state = 'A';
   process -> next = next;
   process -> prev = NULL;
   process -> turns = 0;
@@ -24,19 +24,30 @@ void interrupt_process(Process* process)
   process -> state = 'R';
 }
 
-void continue_process(Process* process)
+void give_cpu_process(Process* process)
 {
-  process -> state = 'E';
+  process -> interruptions++;
+  process -> state = 'W';
+  // priority change
 }
 
+void continue_process(Process* process, time_t total_time)
+{
+  process -> state = 'E';
+  if (! process -> turns)
+  {
+    process -> response = total_time;
+  }
+}
 
 void priority_update(Process* process, int priority)
 {
   process -> priority = priority;
 }
 
-void finish_process(Process* process, FILE* output_file)
+void finish_process(Process* process, FILE* output_file, time_t total_time)
 {
+  process -> turnaround = total_time; 
   process -> state =  'F';
   process -> turns++;
   FILE *output_file = fopen(output_file, "w");
