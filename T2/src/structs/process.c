@@ -2,19 +2,22 @@
 #include <stdlib.h>
 #include "process.h"
 
-void process_init(Process* process, Process* next, int pid, char* name, int priority)
+Process* process_init(int pid, char* name)
 {
-  process -> pid = pid;
-  process -> name = name;
-  process -> priority = priority;
-  process -> state = 'A';
-  process -> next = next;
-  process -> prev = NULL;
-  process -> turns = 0;
-  process -> interruptions = 0;
-  process -> turnaround = 0;
-  process -> response = 0;
-  process -> wating = 0;
+  Process* process = malloc(sizeof(Process));
+  *process = (Process){
+    process -> pid = pid,
+    process -> name = name,
+    process -> state = 'A',
+    process -> next = NULL,
+    process -> prev = NULL,
+    process -> turns = 0,
+    process -> interruptions = 0,
+    process -> turnaround = 0,
+    process -> response = 0,
+    process -> wating = 0,
+  };
+  return process;
 }
 
 void interrupt_process(Process* process)
@@ -38,11 +41,6 @@ void continue_process(Process* process, time_t response)
   {
     process -> response = response;
   }
-}
-
-void priority_update(Process* process, int priority)
-{
-  process -> priority = priority;
 }
 
 void finish_process(Process* process, FILE* output_file, time_t turnaround)
