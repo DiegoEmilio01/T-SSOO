@@ -19,6 +19,7 @@ typedef struct process
   time_t response;        // tiempo que toma desde que entrea hasta el primer E
   time_t waiting;         // tiempo que existe pero no corre (en R o W)
   time_t waiting_init;    // tiempo (timestamp) en que entro a wait
+  int quantum;
 } Process;
 
 Process process_init(char* name, int pid, time_t arrival, int cycles, time_t wait, time_t wait_delay);

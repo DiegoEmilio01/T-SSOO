@@ -18,7 +18,8 @@ Process process_init(char* name, int pid, time_t arrival, int cycles, time_t wai
     .arrival = arrival,
     .response = 0,
     .waiting = 0,
-    .waiting_init = -1
+    .waiting_init = -1,
+    .quantum = -1
   };
   return process;
 }
