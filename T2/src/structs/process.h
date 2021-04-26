@@ -10,7 +10,7 @@ typedef struct process
   int cycles;
   time_t wait;            // N de wait
   time_t wait_delay;      // El delay de cada wait
-  char state;             // toma los valores 'E' (Running), 'R' (Ready), 'W'(Waiting), 'F' (Finished) y 'A' (Arrival).
+  char state;             // toma los valores 'E' (Running), 'R' (Ready), 'W'(Waiting) y 'F' (Finished).
   struct process* next;
   struct process* prev;
   int turns;
