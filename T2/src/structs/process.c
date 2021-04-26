@@ -38,16 +38,16 @@ void give_cpu_process(Process* process)
   // priority change
 }
 
-void continue_process(Process* process, time_t response)
+void continue_process(Process* process, time_t time_now)
 {
   process -> state = 'E';
   if (! process -> turns)
   {
-    process -> response = response;
+    process -> response = time_now - process -> arrival;
   }
 }
 
-void finish_process(Process* process, FILE* output_file, time_t finishing_time, char* name)
+void finish_process(Process* process, FILE* output_file, time_t time_now, char* name)
 {
   process -> state =  'F';
   process -> turns++;
@@ -56,7 +56,7 @@ void finish_process(Process* process, FILE* output_file, time_t finishing_time, 
     name,
     process -> turns,
     process -> interruptions,
-    finishing_time - process -> arrival,
+    time_now - process -> arrival,
     process -> response,
     process -> waiting
   );
