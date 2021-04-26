@@ -24,9 +24,15 @@ Process* collapse_process(Queue *q){
 }
 
 void add_process(Queue* q, Process* p){
-  q->end_process->next = p;
-  p->prev = q->end_process;
-  q->end_process = q->end_process->next;
+  if (q->end_process)
+    q->end_process->next = p;
+  p->prev = q->end_process;  // si es NULL no importa
+  q->end_process = p;
+  p->quantum = q->quantum;
+  if (!(q->start_process)){
+    q->start_process = p;
+    q->curr_process = p;
+  }
 }
 
 /** Saca el mueve un proceso al final de otra cola
