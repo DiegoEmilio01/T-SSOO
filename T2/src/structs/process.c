@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "process.h"
 
-Process process_init(int pid, char* name, int cycles, time_t wait, time_t wait_delay)
+Process process_init(char* name, int pid, time_t arrival, int cycles, time_t wait, time_t wait_delay)
 {
   Process process = (Process){
     .pid = pid,
@@ -15,9 +15,10 @@ Process process_init(int pid, char* name, int cycles, time_t wait, time_t wait_d
     .prev = NULL,
     .turns = 0,
     .interruptions = 0,
-    .turnaround = 0,
+    .arrival = arrival,
     .response = 0,
-    .wating = 0,
+    .waiting = 0,
+    .waiting_init = -1
   };
   return process;
 }
@@ -45,9 +46,8 @@ void continue_process(Process* process, time_t response)
   }
 }
 
-void finish_process(Process* process, FILE* output_file, time_t turnaround, char* name)
+void finish_process(Process* process, FILE* output_file, time_t finishing_time, char* name)
 {
-  process -> turnaround = turnaround; 
   process -> state =  'F';
   process -> turns++;
   FILE *output_file = fopen(output_file, "w");
@@ -55,8 +55,8 @@ void finish_process(Process* process, FILE* output_file, time_t turnaround, char
     name,
     process -> turns,
     process -> interruptions,
-    process -> turnaround,
+    finishing_time - process -> arrival,
     process -> response,
-    process -> wating
+    process -> waiting
   );
 }
