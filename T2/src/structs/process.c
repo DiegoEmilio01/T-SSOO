@@ -47,13 +47,12 @@ void continue_process(Process* process, time_t time_now)
   }
 }
 
-void finish_process(Process* process, FILE* output_file, time_t time_now, char* name)
+void finish_process(Process* process, FILE* output_file, time_t time_now)
 {
   process -> state =  'F';
   process -> turns++;
-  FILE *output_file = fopen(output_file, "w");
   fprintf(output_file, "%s,%i,%i,%ld,%ld,%ld\n",
-    name,
+    process -> name,
     process -> turns,
     process -> interruptions,
     time_now - process -> arrival,
