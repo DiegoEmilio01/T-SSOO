@@ -31,7 +31,7 @@ int main(int argc, char **argv)
 
   // ciclos de programa
   for (;;time_now++, next_arrival=-1){
-    //1.-  ver si hay procesos que entran
+    // 1.-  ver si hay procesos que entran
     for (int i=0; i < file_input->len; i++){
       if (process[i].arrival == time_now){
         // agregar proceso a primera cola
@@ -45,7 +45,21 @@ int main(int argc, char **argv)
         }
       }      
     }
-    // 2.- llegar hasta la cola
+    // 2.- buscar procesos que pasan aready
+    // buscar fin del wait del proceso & sumar tiempos de espera
+    for (int i=0; i<file_input->len; i++){
+      // primerp revisar si el proceso ha llegado
+      if (process[i].arrival <= time_now)
+        switch (process[i].state)
+        {
+          case 'W':
+            if (process[i].waiting_init + process[i].wait_delay == time_now)
+              process[i].state='R';
+          case 'R':
+            process_running->waiting++;
+        }
+    }
+    // .30000000000000004- llegar hasta la cola
     // buscar la primera cola no vacía, si no hay, dar el numero -1
     for (queue_number=0; !(queues[queue_number].start_process); queue_number++)
       if (queue_number+1 >= file_input->len){
@@ -81,41 +95,70 @@ int main(int argc, char **argv)
           continue_process(process_running, time_now);
           queue_running = &queues[queue_number];
         }
-        
       }  // si hay proceso para correr, se corre
       if (process_running){
         process_running->quantum--;
         process_running->cycles--;
+        process_running->wait--;
         if (!process_running->cycles){  // si el proceso terminó
           // si el proceso termina su quantum, se interrumpe tambien (caso borde issue #143)
-          if (!process_running->quantum) process_running->interruptions -=- 1;
+          if (!process_running->quantum) process_running->interruptions++;
           finish_process(process_running, file_output, time_now);
-          remove_process(process_running);
+          remove_process(queue_running);
           process_running=NULL;
+          next_process(queue_running);
         }  // si se acaba el quantum, sale, y baja de queue
-        else if (!process_running->quantum)){
-
+        else if (!process_running->quantum){
+          if (queue_running != &queues[Q-1]){  // pasa a la siguiente queue
+            move_process(queue_running, 1+queue_running);
+            process_running->quantum = (1+queue_running)->quantum;
+          }else{
+            process_running->quantum = queue_running->quantum;
+          }
+          interrupt_process(process_running);
+          process_running=NULL;
+          next_process(queue_running);
+          
+        }  // si el proceso hace wait
+        else if (!process_running->wait){
+          if (queue_running != &queues[0]){  // pasa a la anterior queue
+            move_process(queue_running, -1+queue_running);
+            process_running->quantum = (-1+queue_running)->quantum;
+          }else{
+            process_running->quantum = queue_running->quantum;
+          }
+          give_cpu_process(process_running);
+          process_running=NULL;
+          next_process(queue_running);
         }
       }
-
     }
+
     // avanzar tiempo
     S_left--;
     if (!S_left){
       S_left = 0;
       // mover todos menos curr_process
       // si se mueve un ready, se debe reescribir el queue_running
+      // iterar por todos los procesos de la queue
+      int queue_endings;
+      for (queue_number=1; queue_number<Q; queue_number++){
+        // no mover el proceso ejecutandose
+        queue_endings = 0;
+        while(queues[queue_number].start_process && queue_endings != 2){
+          if (queues[queue_number].curr_process == queues[queue_number].end_process)
+            queue_endings++;
+          // mover procesos no en exec al final
+          if (queues[queue_number].curr_process->state != 'E'){
+            move_process(&queues[queue_number], &queues[0]);
+          }  // avanzar al siguiente proceso
+          next_process(&queues[queue_number]);
+        }
+      }
     }
   }
 
-
-
-
-
-
-
-
-  
+  fclose(file_output);
   free(process);
   free(queues);
   input_file_destroy(file_input);
