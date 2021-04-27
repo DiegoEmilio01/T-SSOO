@@ -26,3 +26,4 @@ Process process_init(char* name, int pid, time_t arrival, int cycles, time_t wai
 void interrupt_process(Process* process);
 void continue_process(Process* process, time_t total_time);
 void finish_process(Process* process, FILE* output_file, time_t total_time);
+void give_cpu_process(Process* process);
