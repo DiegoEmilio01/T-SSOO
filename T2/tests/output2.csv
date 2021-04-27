@@ -1,0 +1,7 @@
+MergeSort,6,5,173,0,145
+QuickSort,5,5,150,5,125
+BubbleSort,7,7,198,10,163
+SelectionSort,9,9,238,15,193
+InsertionSort,9,9,243,20,198
+HeapSort,4,4,135,25,115
+BogoSort,13,12,298,30,198

@@ -1,0 +1,13 @@
+MergeSort,4,3,262,0,234
+QuickSort,4,3,279,3,254
+BubbleSort,6,5,351,6,316
+SelectionSort,5,5,464,9,419
+InsertionSort,7,6,413,12,368
+HeapSort,4,3,311,15,291
+BogoSort,13,12,670,18,570
+Chrome,23,13,669,21,569
+Spotify,14,9,600,23,500
+VSCode,6,3,126,25,111
+PyCharm,20,10,225,22,175
+Excel,6,3,132,18,117
+Movie,18,15,708,6,558
