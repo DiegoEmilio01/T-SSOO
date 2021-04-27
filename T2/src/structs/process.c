@@ -31,11 +31,12 @@ void interrupt_process(Process* process)
   process -> state = 'R';
 }
 
-void give_cpu_process(Process* process)
+void give_cpu_process(Process* process, time_t time_now)
 {
   process -> interruptions++;
   process -> state = 'W';
-  // priority change
+  process->waiting_init = time_now;
+  process -> turns++;
 }
 
 void continue_process(Process* process, time_t time_now)

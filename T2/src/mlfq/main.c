@@ -1,9 +1,10 @@
 #include <stdio.h>
+#include <stdlib.h> 
 #include "../file_manager/manager.h"
 #include "../structs/queue.h"
 #include "../structs/process.h"
 
-int time_now=-1;
+int time_now=0;
 int next_arrival=-1;
 
 int main(int argc, char **argv)
@@ -48,7 +49,7 @@ int main(int argc, char **argv)
     // 2.- buscar procesos que pasan aready
     // buscar fin del wait del proceso & sumar tiempos de espera
     for (int i=0; i<file_input->len; i++){
-      // primerp revisar si el proceso ha llegado
+      // primero revisar si el proceso ha llegado
       if (process[i].arrival <= time_now)
         switch (process[i].state)
         {
@@ -56,16 +57,17 @@ int main(int argc, char **argv)
             if (process[i].waiting_init + process[i].wait_delay == time_now)
               process[i].state='R';
           case 'R':
-            process_running->waiting++;
+            process[i].waiting++;
         }
     }
     // .30000000000000004- llegar hasta la cola
     // buscar la primera cola no vacía, si no hay, dar el numero -1
-    for (queue_number=0; !(queues[queue_number].start_process); queue_number++)
-      if (queue_number+1 >= file_input->len){
+    for (queue_number=0; !(queues[queue_number].start_process); queue_number++){
+      if (queue_number+1 >= Q){
         queue_number = -1;
         break;
       }
+    }
     // ver si no hay nada en el futuro (no quedan mas procesos)
     if (queue_number == -1 && next_arrival == -1) break;
     // si hay procesos para ejecutar:
@@ -73,7 +75,7 @@ int main(int argc, char **argv)
 
       // si no hay programa en running, obtener uno en ready
       if (!process_running){
-        for (;queue_number<file_input->len; queue_number++){
+        for (;queue_number<Q; queue_number++){
           if (!queues[queue_number].curr_process) continue;  // si no hay proceso actual, se pasa a la siguiente
           process_running = queues[queue_number].curr_process;
           if (process_running->state != 'R'){
@@ -82,10 +84,12 @@ int main(int argc, char **argv)
             if (queues[queue_number].curr_process == process_running) process_running=NULL;
             else for(Process *curr_process=queues[queue_number].curr_process; curr_process->state!='R'; next_process(&queues[queue_number]))
             {
-              if(curr_process == process_running){
+            curr_process=queues[queue_number].curr_process;
+              if(curr_process->pid == process_running->pid){
                 process_running = NULL;  // no se encontró un proceso en 'R'
                 break;
               }
+              
             }
           }
           if (process_running) break;
@@ -93,17 +97,20 @@ int main(int argc, char **argv)
         // dejar el proceso en running, y la cola actual
         if (process_running){
           continue_process(process_running, time_now);
+          process_running->waiting--;  // evitar contar doble
           queue_running = &queues[queue_number];
         }
       }  // si hay proceso para correr, se corre
       if (process_running){
         process_running->quantum--;
         process_running->cycles--;
-        process_running->wait--;
+        // si espera alguna vez, no cuento dlble
+        if (process_running->wait != -1)
+          process_running->wait--;
         if (!process_running->cycles){  // si el proceso terminó
           // si el proceso termina su quantum, se interrumpe tambien (caso borde issue #143)
           if (!process_running->quantum) process_running->interruptions++;
-          finish_process(process_running, file_output, time_now);
+          finish_process(process_running, file_output, time_now+1);  // se suma 1 para que la suma incluya el final
           remove_process(queue_running);
           process_running=NULL;
           next_process(queue_running);
@@ -116,6 +123,14 @@ int main(int argc, char **argv)
             process_running->quantum = queue_running->quantum;
           }
           interrupt_process(process_running);
+          // si debe ocurrir wait, se hace
+          if (!process_running->wait){
+            give_cpu_process(process_running, time_now);
+            // no contar doble
+            process_running->interruptions--;
+            process_running->turns--;
+            printf("wait exacto\n");
+          }
           process_running=NULL;
           next_process(queue_running);
           
@@ -127,7 +142,7 @@ int main(int argc, char **argv)
           }else{
             process_running->quantum = queue_running->quantum;
           }
-          give_cpu_process(process_running);
+          give_cpu_process(process_running, time_now);
           process_running=NULL;
           next_process(queue_running);
         }
@@ -137,23 +152,28 @@ int main(int argc, char **argv)
     // avanzar tiempo
     S_left--;
     if (!S_left){
-      S_left = 0;
+      S_left = S;
       // mover todos menos curr_process
       // si se mueve un ready, se debe reescribir el queue_running
       // iterar por todos los procesos de la queue
       int queue_endings;
       for (queue_number=1; queue_number<Q; queue_number++){
         // no mover el proceso ejecutandose
-        queue_endings = 0;
-        while(queues[queue_number].start_process && queue_endings != 2){
+        queue_endings = 1;
+        Process *curr_process = queues[queue_number].curr_process;
+        queues[queue_number].curr_process = queues[queue_number].start_process;
+        while(queues[queue_number].start_process && queue_endings != 1){
           if (queues[queue_number].curr_process == queues[queue_number].end_process)
             queue_endings++;
           // mover procesos no en exec al final
           if (queues[queue_number].curr_process->state != 'E'){
+            if (queues[queue_number].curr_process == curr_process)
+              curr_process = NULL;
             move_process(&queues[queue_number], &queues[0]);
           }  // avanzar al siguiente proceso
           next_process(&queues[queue_number]);
         }
+        queues[queue_number].curr_process = curr_process;
       }
     }
   }

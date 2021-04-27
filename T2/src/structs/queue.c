@@ -56,11 +56,11 @@ void move_process(Queue *from, Queue *to){
 }
 
 void remove_process(Queue *q){
-  free(collapse_process(q));
+  collapse_process(q);
 }
 
 void next_process(Queue *q){
-  if (q->curr_process->next)
+  if (q->curr_process && q->curr_process->next)
     q->curr_process = q->curr_process->next;
   else
     q->curr_process = q->start_process;

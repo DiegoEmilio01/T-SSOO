@@ -45,7 +45,7 @@ LIB=$(GTK) $(MTH)
 ###############################################################################
 
 # Directorios con elementos de uso común
-COMMON= file_manager
+COMMON=file_manager structs
 
 # Directorios que serán compilados a un programa
 PROGRAMS= mlfq
