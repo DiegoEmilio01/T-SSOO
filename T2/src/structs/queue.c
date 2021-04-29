@@ -11,15 +11,16 @@ Process* collapse_process(Queue *q){
     q->end_process = q->curr_process->prev;
   if (q->curr_process == q->start_process)
     q->start_process = q->curr_process->next;
-  if (q->curr_process->next)
-    q->curr_process->next->prev = q->curr_process->prev;
   if (q->curr_process->prev){
     q->curr_process->prev->next = q->curr_process->next;
     // dejar como proceso actual el anterior:
-    q->curr_process = q->curr_process->prev;
+  }
+  if (q->curr_process->next){
+    q->curr_process->next->prev = q->curr_process->prev;
+    q->curr_process = q->curr_process->next;
   }
   else  // no hay proceso previo, se asume que curr esta en start
-    q->curr_process = q->end_process;  // por lo que el anterior es end
+    q->curr_process = q->start_process;  // por lo que el anterior es end
   return p;
 }
 
@@ -52,6 +53,7 @@ void move_process(Queue *from, Queue *to){
     to->curr_process = p;
     p->prev = NULL;
   }
+  p->quantum = to->quantum;
   to->end_process = p;
 }
 

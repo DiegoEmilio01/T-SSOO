@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "process.h"
 
-Process process_init(char* name, int pid, time_t arrival, int cycles, time_t wait, time_t wait_delay)
+Process process_init(char* name, int pid, int arrival, int cycles, int wait, int wait_delay)
 {
   Process process = (Process){
     .pid = pid,
@@ -18,7 +18,7 @@ Process process_init(char* name, int pid, time_t arrival, int cycles, time_t wai
     .arrival = arrival,
     .response = 0,
     .waiting = 0,
-    .waiting_init = -1,
+    .waiting_init = (int)-1,
     .quantum = -1
   };
   return process;
@@ -27,32 +27,29 @@ Process process_init(char* name, int pid, time_t arrival, int cycles, time_t wai
 void interrupt_process(Process* process)
 {
   process -> interruptions++;
-  process -> turns++;
   process -> state = 'R';
 }
 
-void give_cpu_process(Process* process, time_t time_now)
+void give_cpu_process(Process* process, int time_now)
 {
-  process -> interruptions++;
   process -> state = 'W';
   process->waiting_init = time_now;
-  process -> turns++;
 }
 
-void continue_process(Process* process, time_t time_now)
+void continue_process(Process* process, int time_now)
 {
   process -> state = 'E';
   if (! process -> turns)
   {
     process -> response = time_now - process -> arrival;
   }
+  process -> turns++;
 }
 
-void finish_process(Process* process, FILE* output_file, time_t time_now)
+void finish_process(Process* process, FILE* output_file, int time_now)
 {
   process -> state =  'F';
-  process -> turns++;
-  fprintf(output_file, "%s,%i,%i,%ld,%ld,%ld\n",
+  fprintf(output_file, "%s,%i,%i,%d,%d,%d\n",
     process -> name,
     process -> turns,
     process -> interruptions,
