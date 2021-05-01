@@ -121,12 +121,13 @@ int main(int argc, char **argv)
             move_process(queue_running, 1+queue_running);
           }else{
             process_running->quantum = queue_running->quantum;
+            move_process(queue_running, queue_running);
           }
+          interrupt_process(process_running);
           // si debe ocurrir wait, se hace
           if (!process_running->wait){
             give_cpu_process(process_running, time_now);
           }
-          interrupt_process(process_running);
           process_running=NULL;
           
         }  // si el proceso hace wait
@@ -135,6 +136,7 @@ int main(int argc, char **argv)
             move_process(queue_running, -1+queue_running);
           }else{
             process_running->quantum = queue_running->quantum;
+            move_process(queue_running, queue_running);
           }
           give_cpu_process(process_running, time_now);
           process_running=NULL;
