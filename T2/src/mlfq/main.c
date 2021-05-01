@@ -32,7 +32,7 @@ int main(int argc, char **argv)
 
   // ciclos de programa
   for (;;time_now++, next_arrival=-1){
-    printf("\ntime: %d ; S:%d\n", time_now, S_left);
+    // printf("\ntime: %d ; S:%d\n", time_now, S_left);
     // 1.-  ver si hay procesos que entran
     for (int i=0; i < file_input->len; i++){
       if (process[i].arrival == time_now){
@@ -50,7 +50,7 @@ int main(int argc, char **argv)
     // buscar fin del wait del proceso & sumar tiempos de espera
     for (int i=0; i<file_input->len; i++){
       // primero revisar si el proceso ha llegado
-      printf("%s %c %d %d %d %d\n", process[i].name, process[i].state, process[i].quantum, process[i].turns, process[i].waiting, process[i].cycles);
+      // printf("%s %c %d %d %d %d\n", process[i].name, process[i].state, process[i].quantum, process[i].turns, process[i].waiting, process[i].cycles);
       if (process[i].arrival <= time_now)
         switch (process[i].state)
         {
