@@ -9,6 +9,7 @@ typedef struct process
   char* name;
   int cycles;
   int wait;            // N de wait
+  int orig_wait;
   int wait_delay;      // El delay de cada wait
   char state;             // toma los valores 'E' (Running), 'R' (Ready), 'W'(Waiting) y 'F' (Finished).
   struct process* next;

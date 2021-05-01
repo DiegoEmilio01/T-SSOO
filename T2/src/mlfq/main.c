@@ -30,7 +30,7 @@ int main(int argc, char **argv)
                               atoi(file_input->lines[i][5]));
   }
   // tiempos que van a ciclar
-  int S_left=S, queue_number, curr_queue_number;
+  int S_left=S, queue_number;
 
   // ciclos de programa
   for (;;time_now++, next_arrival=-1){
@@ -57,8 +57,10 @@ int main(int argc, char **argv)
         switch (process[i].state)
         {
           case 'W':
-            if ((process[i].waiting_init+1) && process[i].waiting_init + process[i].wait_delay == time_now)
+            if ((process[i].waiting_init+1) && process[i].waiting_init + process[i].wait_delay == time_now){
               process[i].state='R';
+              process[i].wait = process[i].orig_wait;
+            }
           case 'R':
             process[i].waiting++;
         }
@@ -98,7 +100,6 @@ int main(int argc, char **argv)
         }
         // dejar el proceso en running, y la cola actual
         if (process_running){
-          curr_queue_number = queue_number;
           continue_process(process_running, time_now);
           process_running->waiting--;  // evitar contar doble
           queue_running = &queues[queue_number];
