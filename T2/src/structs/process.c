@@ -10,7 +10,7 @@ Process process_init(char* name, int pid, int arrival, int cycles, int wait, int
     .cycles = cycles,
     .wait = (wait != 0 ? wait : -1),  // si nunca espera, se deja en -1 (caso borde si arrival es 0)
     .orig_wait = (wait != 0 ? wait : -1),
-    .wait_delay = wait_delay,
+    .wait_delay = wait_delay+1,
     .state = 'R',
     .next = NULL,
     .prev = NULL,
