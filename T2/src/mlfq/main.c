@@ -7,6 +7,8 @@
 int time_now=0;
 int next_arrival=-1;
 
+// move_process setea el quantum del proceso que se mueve
+
 int main(int argc, char **argv)
 {
   InputFile *file_input = read_file(argv[1]);
