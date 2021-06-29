@@ -1,0 +1,118 @@
+!
+version 15.4
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname main
+!
+!
+!
+enable secret 5 $1$mERr$4dpRATIgxQacPVK0CfNV4/
+enable password qwer
+!
+!
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0/0
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface GigabitEthernet0/0/1
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface FastEthernet0/0/0
+ bandwidth 1000000
+ media-type sfp
+ no ip address
+!
+interface GigabitEthernet0/1/0
+ switchport mode access
+ switchport nonegotiate
+!
+interface GigabitEthernet0/1/1
+ switchport mode access
+ switchport nonegotiate
+!
+interface GigabitEthernet0/1/2
+ switchport mode access
+ switchport nonegotiate
+!
+interface GigabitEthernet0/1/3
+ switchport mode access
+ switchport nonegotiate
+!
+interface GigabitEthernet0/2/0
+ switchport mode access
+ switchport nonegotiate
+!
+interface GigabitEthernet0/2/1
+ switchport mode access
+ switchport nonegotiate
+!
+interface GigabitEthernet0/2/2
+ switchport mode access
+ switchport nonegotiate
+!
+interface GigabitEthernet0/2/3
+ switchport mode access
+ switchport nonegotiate
+!
+interface Vlan1
+ ip address 56.56.56.0 255.0.0.0
+!
+router rip
+!
+ip classless
+ip route 192.168.1.0 255.255.255.0 3.3.0.1 
+ip route 3.3.0.0 255.255.0.0 196.168.1.1 
+!
+ip flow-export version 9
+!
+!
+!
+!
+!
+!
+!
+!
+line con 0
+!
+line aux 0
+!
+line vty 0 4
+ password qwer
+ login
+!
+!
+!
+end
+
